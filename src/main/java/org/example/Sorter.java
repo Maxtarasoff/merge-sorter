@@ -1,44 +1,49 @@
 package org.example;
 
+import lombok.RequiredArgsConstructor;
 import org.example.options.Options;
 import org.example.options.types.Datatype;
 
 import java.util.LinkedList;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class Sorter {
-    public static void execute(Options options){
 
-        printType(options.getDatatype());
+    private final Options options;
+
+    public void execute(){
+        System.out.println(options);
+//        printType(options.getDatatype());
         mergeFiles(options);
 
 //        List<LinkedList<Integer>> inputLists = fileParser.read(options.getInputFiles());
 //        var output = merge(inputLists);
     }
 
-    private static void mergeFiles(Options options) {
+    private void mergeFiles(Options options) {
         if (options.getDatatype().equals(Datatype.INT))
             mergeIntegers(options);
         else
             mergeStrings(options);
     }
 
-    private static void mergeStrings(Options options) {
+    private void mergeStrings(Options options) {
     }
 
-    private static void mergeIntegers(Options options) {
+    private void mergeIntegers(Options options) {
     }
 
-    private static  <T> LinkedList<T> merge(List<LinkedList<T>> inputLists) {
+    private <T> LinkedList<T> merge(List<LinkedList<T>> inputLists) {
         LinkedList<T> result = new LinkedList<>();
         inputLists.forEach(result::addAll);
         return result;
     }
 
-    private static void printType(Datatype datatype){
+    private void printType(Datatype datatype){
         System.out.println(datatype == Datatype.INT ? "Integer" : "String");
     }
 
-    private static void noCommand() {
+    private void noCommand() {
     }
 }
