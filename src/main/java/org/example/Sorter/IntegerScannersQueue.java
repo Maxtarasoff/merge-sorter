@@ -1,4 +1,4 @@
-package org.example.ScannerQueues;
+package org.example.Sorter;
 
 import org.example.options.Options;
 
@@ -8,7 +8,7 @@ public class IntegerScannersQueue extends ScannersQueue<Integer>{
     }
 
     @Override
-    protected Integer convert(String string) throws NumberFormatException {
+    protected Integer parse(String string) throws NumberFormatException {
         return Integer.parseInt(string);
     }
 }

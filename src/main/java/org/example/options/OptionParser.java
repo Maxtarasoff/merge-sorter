@@ -1,5 +1,6 @@
 package org.example.options;
 
+import org.example.exceptions.ExceptionPrinter;
 import org.example.exceptions.NotEnoughArgumentsException;
 import org.example.options.types.DataType;
 import org.example.options.types.SortOrder;
@@ -14,7 +15,7 @@ public class OptionParser {
         try {
             verifyArgumentsCount(args.length);
 
-            SortOrder sortOrder = SortOrder.ASCENDING; //default value
+            SortOrder sortOrder = SortOrder.ASCENDING;
             DataType dataType = DataType.UNKNOWN;
             File outputFile;
             List<File> files = new ArrayList<>();
@@ -40,7 +41,7 @@ public class OptionParser {
                     .build();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ExceptionPrinter.print(e);
             return null;
         }
     }
@@ -66,7 +67,7 @@ public class OptionParser {
                     throw new FileNotFoundException(file.getName() + " not found");
             }
             catch (Exception e) {
-                e.printStackTrace();
+                ExceptionPrinter.print(e);
             }
             return false;
         }).toList();
