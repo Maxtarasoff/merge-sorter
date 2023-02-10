@@ -12,22 +12,22 @@ import java.util.Optional;
 public class Sorter {
 
     private final Options options;
-    private final ScannersQueue<?> scannersQueue;
+    private final ReadersQueue<?> readersQueue;
 
     public Sorter(Options options) {
         this.options = options;
-        scannersQueue = options.getDataType().equals(DataType.INT)
-                ? new IntegerScannersQueue(options)
-                : new StringScannersQueue(options);
+        readersQueue = options.getDataType().equals(DataType.INT)
+                ? new IntegerReadersQueue(options)
+                : new StringReadersQueue(options);
     }
     public void merge() {
         try (FileWriter writer = new FileWriter(options.getOutputFile())) {
-            while (!scannersQueue.isEmpty()) {
+            while (!readersQueue.isEmpty()) {
                 try {
-                    Optional<String> nextElement = scannersQueue.pollNextElement();
+                    Optional<String> nextElement = readersQueue.pollNextElement();
                     if (nextElement.isPresent()) {
-                        writer.write(nextElement.get() + System.lineSeparator());
-                        scannersQueue.setPreviousElement(nextElement.get());
+                        writer.write(nextElement.get() + "\n");
+                        readersQueue.setPreviousElement(nextElement.get());
                     }
                 } catch (SortOrderBrokenException e) {
                     ExceptionPrinter.print(e);

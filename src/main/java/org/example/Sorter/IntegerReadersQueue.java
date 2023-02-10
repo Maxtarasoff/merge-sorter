@@ -2,8 +2,8 @@ package org.example.Sorter;
 
 import org.example.options.Options;
 
-public class IntegerScannersQueue extends ScannersQueue<Integer>{
-    public IntegerScannersQueue(Options options) {
+public class IntegerReadersQueue extends ReadersQueue<Integer> {
+    public IntegerReadersQueue(Options options) {
         super(options);
     }
 

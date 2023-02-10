@@ -6,64 +6,67 @@ import org.example.exceptions.SortOrderBrokenException;
 import org.example.options.Options;
 import org.example.options.types.SortOrder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 
-public abstract class ScannersQueue<T extends Comparable<T>> {
-    private final Queue<Map.Entry<T, Scanner>> scannersQueue;
+public abstract class ReadersQueue<T extends Comparable<T>> {
+    private final Queue<Map.Entry<T, BufferedReader>> readersQueue;
     private final Options options;
     private T previousElement = null;
 
-    public ScannersQueue(Options options){
+    public ReadersQueue(Options options){
         this.options = options;
-        Comparator<Map.Entry<T, Scanner>> sortComparator = (options.getSortOrder().equals(SortOrder.ASCENDING))
+        Comparator<Map.Entry<T, BufferedReader>> sortComparator = (options.getSortOrder().equals(SortOrder.ASCENDING))
                 ? Map.Entry.comparingByKey()
                 : (o1, o2) -> -o1.getKey().compareTo(o2.getKey());
-        this.scannersQueue = new PriorityQueue<>(this.options.getInputFiles().size(), sortComparator);
+        this.readersQueue = new PriorityQueue<>(this.options.getInputFiles().size(), sortComparator);
         this.initQueue();
     }
 
     private void initQueue(){
         for (File file : options.getInputFiles()){
             try {
-                offerNextElement(new Scanner(file));
+                offerNextElement(new BufferedReader(new FileReader(file)));
             }
-            catch (FileNotFoundException e){
+            catch (IOException e){
                 ExceptionPrinter.print(e);
             }
         }
     }
 
-    private void offerNextElement(Scanner scanner) {
-        if (scanner.hasNext()) {
-            String nextLine = scanner.nextLine().trim();
-            try {
+    private void offerNextElement(BufferedReader reader){
+        try {
+            String nextLine = reader.readLine();
+            if (nextLine != null) {
                 if (nextLine.isEmpty()) throw new EmptyLineException();
                 T element = parse(nextLine);
-                scannersQueue.offer(new AbstractMap.SimpleImmutableEntry<>(element, scanner));
-            } catch (NumberFormatException | EmptyLineException e) {
-                ExceptionPrinter.print(e);
-                offerNextElement(scanner);
+                readersQueue.offer(new AbstractMap.SimpleImmutableEntry<>(element, reader));
             }
-        } else scanner.close();
+        } catch (NumberFormatException | EmptyLineException | IOException e) {
+            ExceptionPrinter.print(e);
+            offerNextElement(reader);
+        }
     }
 
-    public Optional<String> pollNextElement() throws SortOrderBrokenException {
-        Map.Entry<T, Scanner> entry = scannersQueue.poll();
+    public Optional<String> pollNextElement() throws SortOrderBrokenException, IOException {
+        Map.Entry<T, BufferedReader> entry = readersQueue.poll();
+        if (entry == null) return Optional.empty();
 
-        if (entry != null) {
-            T nextElement = entry.getKey();
-            Scanner scanner = entry.getValue();
-            offerNextElement(scanner);
+        T nextElement = entry.getKey();
+        BufferedReader reader = entry.getValue();
+        offerNextElement(reader);
 
-            if (isCorrectOrder(previousElement,nextElement)) {
+        if (nextElement == null) {
+            reader.close();
+        } else {
+            if (isCorrectOrder(previousElement, nextElement)) {
                 return Optional.of(nextElement.toString());
             } else {
                 throw new SortOrderBrokenException();
             }
-        } else
-            return Optional.empty();
+        }
+
+        return Optional.empty();
     }
 
     private boolean isCorrectOrder(T previousElement, T nextElement) {
@@ -74,7 +77,7 @@ public abstract class ScannersQueue<T extends Comparable<T>> {
     }
 
     public boolean isEmpty() {
-        return scannersQueue.isEmpty();
+        return readersQueue.isEmpty();
     }
 
     protected abstract T parse(String string) throws NumberFormatException;
