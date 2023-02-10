@@ -1,5 +1,5 @@
 package org.example.options.types;
 
-public enum SortDirection {
+public enum SortOrder {
     ASCENDING, DESCENDING;
 }

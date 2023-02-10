@@ -1,8 +1,8 @@
 package org.example.options;
 
 import org.example.exceptions.NotEnoughArgumentsException;
-import org.example.options.types.Datatype;
-import org.example.options.types.SortDirection;
+import org.example.options.types.DataType;
+import org.example.options.types.SortOrder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,26 +12,26 @@ public class OptionParser {
     public static Options parse(String[] args) throws Exception {
 
         if (args.length < 3) {
-            throw new NotEnoughArgumentsException("Number of arguments < 3");
+            throw new NotEnoughArgumentsException("The number of arguments must be at least 3");
         }
 
-        SortDirection sortDirection = SortDirection.ASCENDING; //default value
-        Datatype datatype = Datatype.UNKNOWN;
+        SortOrder sortOrder = SortOrder.ASCENDING; //default value
+        DataType dataType = DataType.UNKNOWN;
         List<File> files = new ArrayList<>();
 
         for (String arg : args) {
             switch (arg) {
-                case "-a" -> sortDirection = SortDirection.ASCENDING;
-                case "-d" -> sortDirection = SortDirection.DESCENDING;
-                case "-i" -> datatype = Datatype.INT;
-                case "-s" -> datatype = Datatype.STRING;
+                case "-a" -> sortOrder = SortOrder.ASCENDING;
+                case "-d" -> sortOrder = SortOrder.DESCENDING;
+                case "-i" -> dataType = DataType.INT;
+                case "-s" -> dataType = DataType.STRING;
                 default -> files.add(new File(arg));
             }
         }
 
         Options options = Options.builder()
-                .datatype(datatype)
-                .sortDirection(sortDirection)
+                .datatype(dataType)
+                .sortOrder(sortOrder)
                 .outputFile(files.get(0))
                 .inputFiles(files.subList(1, files.size()))
                 .build();
@@ -41,7 +41,7 @@ public class OptionParser {
     }
 
     private static void check(Options options) throws Exception{
-        if (options.getDatatype().equals(Datatype.UNKNOWN))
+        if (options.getDatatype().equals(DataType.UNKNOWN))
             throw new NotEnoughArgumentsException("No data type specified");
         if (options.getInputFiles().size() == 0)
             throw new NotEnoughArgumentsException("No input files specified");

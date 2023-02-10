@@ -2,8 +2,8 @@ package org.example.options;
 
 import lombok.Builder;
 import lombok.Data;
-import org.example.options.types.Datatype;
-import org.example.options.types.SortDirection;
+import org.example.options.types.DataType;
+import org.example.options.types.SortOrder;
 
 import java.io.File;
 import java.util.List;
@@ -12,8 +12,8 @@ import java.util.List;
 @Builder
 public class Options {
     private List<File> inputFiles;
-    private Datatype datatype;
-    private SortDirection sortDirection;
+    private DataType datatype;
+    private SortOrder sortOrder;
     private File outputFile;
 
 }
