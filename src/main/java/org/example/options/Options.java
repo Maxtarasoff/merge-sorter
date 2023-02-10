@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 public class Options {
     private List<File> inputFiles;
-    private DataType datatype;
+    private DataType dataType;
     private SortOrder sortOrder;
     private File outputFile;
 

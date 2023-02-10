@@ -1,21 +1,31 @@
 package org.example;
 
 import lombok.RequiredArgsConstructor;
+import org.example.ScannerQueues.IntegerScannersQueue;
+import org.example.ScannerQueues.ScannersQueue;
+import org.example.ScannerQueues.StringScannersQueue;
 import org.example.options.Options;
 import org.example.options.types.DataType;
 
-import java.io.*;
-import java.util.*;
-import java.util.function.Supplier;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 @RequiredArgsConstructor
 public class Sorter {
 
     private final Options options;
 
-    public void execute() throws IOException{
+    public void merge() {
         System.out.println(options);
-        optionalString("d");
+        assert options != null;
+        ScannersQueue<?> scannersQueue = options.getDataType().equals(DataType.INT)
+                ? new IntegerScannersQueue(options)
+                : new StringScannersQueue(options);
+
+
 //        if (options.getInputFiles().size() == 1)
 //            copyInputFile();
 //        else
@@ -95,30 +105,14 @@ public class Sorter {
         fileWriter.close();
     }
 
-    private void mergeStrings(Options options) {
-    }
-
-    private void mergeIntegers(Options options) {
-    }
-
-    private <T> LinkedList<T> merge(List<LinkedList<T>> inputLists) {
-        LinkedList<T> result = new LinkedList<>();
-        inputLists.forEach(result::addAll);
-        return result;
-    }
-
-    private void printType(DataType datatype){
-        System.out.println(datatype == DataType.INT ? "Integer" : "String");
-    }
-
-    private String optionalString(String s) {
-        Optional<String> optionalS;
-        optionalS = (s == null) ? Optional.empty() : Optional.of(s);
-
-        Comparator<Integer> asc = Comparator.naturalOrder();
-        Comparator<Integer> desc = Comparator.reverseOrder();
-        System.out.println(asc.compare(1,2));
-        System.out.println(desc.compare(1,2));
-        return optionalS.orElse("null");
-    }
+//    private String optionalString(String s) {
+//        Optional<String> optionalS;
+//        optionalS = (s == null) ? Optional.empty() : Optional.of(s);
+//
+//        Comparator<Integer> asc = Comparator.naturalOrder();
+//        Comparator<Integer> desc = Comparator.reverseOrder();
+//        System.out.println(asc.compare(1,2));
+//        System.out.println(desc.compare(1,2));
+//        return optionalS.orElse("null");
+//    }
 }
